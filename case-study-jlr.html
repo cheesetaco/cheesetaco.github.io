@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jaguar Land Rover: A User Centered Innovation Cycle — Case Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #131313;
+  --bg-card: #1b1b1b;
+  --text: #ffffff;
+  --text-mid: rgba(255,255,255,0.85);
+  --text-dim: rgba(255,255,255,0.4);
+  --text-faint: rgba(255,255,255,0.2);
+  --accent: #C8522E;
+  --border: rgba(147,147,147,0.25);
+  --border-faint: rgba(255,255,255,0.06);
+  --serif: 'DM Serif Display', Georgia, serif;
+  --sans: 'Instrument Sans', -apple-system, sans-serif;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --max-w: 1320px;
+  --px: clamp(24px, 6vw, 100px);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+::selection { background: var(--accent); color: #fff; }
+img { max-width: 100%; display: block; }
+
+/* NAV */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0 clamp(24px, 4vw, 64px); height: 72px; display: flex; align-items: center; justify-content: space-between; background: rgba(19,19,19,0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid transparent; transition: border-color 0.3s ease, background 0.3s ease; }
+nav.scrolled { border-bottom-color: var(--border-faint); background: rgba(19,19,19,0.95); }
+.nav-logo { font-family: var(--serif); font-size: 1.15rem; color: #fff; text-decoration: none; letter-spacing: -0.01em; }
+.nav-logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 36px; align-items: center; list-style: none; }
+.nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--text-dim); text-decoration: none; transition: color 0.2s; position: relative; }
+.nav-links a:hover { color: #fff; }
+.nav-links a.active { color: #fff; }
+.nav-links a.active::after { content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 1.5px; background: var(--accent); border-radius: 1px; }
+.nav-cta { font-size: 0.8125rem !important; font-weight: 600 !important; color: var(--bg) !important; background: #fff; padding: 9px 22px; border-radius: 100px; transition: background 0.2s, transform 0.2s !important; }
+.nav-cta:hover { background: var(--accent) !important; color: #fff !important; transform: translateY(-1px); }
+.nav-cta::after { display: none !important; }
+.hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; background: none; border: none; }
+.hamburger span { display: block; width: 22px; height: 1.5px; background: #fff; transition: all 0.3s var(--ease-out); }
+
+/* HERO BANNER */
+.hero-banner {
+  position: relative;
+  width: 100%;
+  margin-top: 72px;
+  aspect-ratio: 16/7;
+  max-height: 560px;
+  overflow: hidden;
+  background: #1a1a1a;
+}
+.hero-banner img {
+  width: 100%; height: 100%; object-fit: cover;
+  opacity: 0; animation: fadeIn 1s var(--ease-out) 0.1s forwards;
+}
+.hero-banner-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(19,19,19,0) 0%, rgba(19,19,19,0) 35%, rgba(19,19,19,0.85) 75%, rgba(19,19,19,1) 100%);
+  pointer-events: none;
+}
+.hero-banner-content {
+  position: absolute; bottom: 0; left: 0; right: 0; z-index: 2;
+  max-width: var(--max-w); margin: 0 auto;
+  padding: 0 var(--px) 28px;
+}
+.cs-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.8125rem; font-weight: 500; color: rgba(255,255,255,0.6);
+  text-decoration: none; margin-bottom: 20px;
+  transition: color 0.2s, gap 0.2s var(--ease-out);
+  opacity: 0; animation: fadeIn 0.8s var(--ease-out) 0.2s forwards;
+}
+.cs-back:hover { color: #fff; gap: 12px; }
+.cs-hero-title {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 3.8vw, 3.2rem);
+  line-height: 1.12; letter-spacing: -0.03em;
+  max-width: 700px; margin-bottom: 14px;
+  color: #fff;
+  opacity: 0; animation: fadeIn 0.8s var(--ease-out) 0.3s forwards;
+}
+.cs-focus {
+  font-size: 0.8125rem; color: rgba(255,255,255,0.5); letter-spacing: 0.02em;
+  opacity: 0; animation: fadeIn 0.8s var(--ease-out) 0.4s forwards;
+  margin-top: 20px;
+}
+
+/* LAYOUT */
+.cs-wrap { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--px); }
+.section-title { font-family: var(--serif); font-size: clamp(1.5rem, 2.5vw, 2rem); line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 24px; }
+.section-title-sm { font-family: var(--serif); font-size: clamp(1.5rem, 2.5vw, 2rem); line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 24px; }
+.cs-section { margin-bottom: 100px; }
+.cs-body p { font-size: 0.9375rem; line-height: 1.8; color: var(--text-mid); margin-bottom: 14px; max-width: 800px; }
+.cs-body ul { list-style: none; padding: 0; margin: 0 0 14px; max-width: 800px; }
+.cs-body ul li { font-size: 0.9375rem; color: var(--text-mid); line-height: 1.7; padding-left: 18px; position: relative; margin-bottom: 8px; }
+.cs-body ul li::before { content: ''; position: absolute; left: 0; top: 10px; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(36px, 5vw, 80px); align-items: start; }
+.img-frame { position: relative; overflow: hidden; border-radius: 12px; background: linear-gradient(135deg, #1a1a1a 0%, #222 50%, #1a1a1a 100%); }
+.img-frame img, .img-frame video { width: 100%; height: 100%; object-fit: cover; display: block; position: relative; z-index: 2; }
+
+/* FEATURES */
+.feature-row { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(36px, 5vw, 80px); align-items: start; }
+.feature-item h3 { font-family: var(--serif); font-size: 1.25rem; line-height: 1.3; margin-bottom: 14px; }
+.feature-item p { font-size: 0.9375rem; line-height: 1.8; color: var(--text-mid); margin-bottom: 12px; max-width: 800px; }
+.feature-item .img-frame { aspect-ratio: 16/10; margin-bottom: 24px; }
+
+/* PIPELINE EXPANDED */
+.pipeline-section { margin-bottom: 100px; }
+.pipeline-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(36px, 5vw, 80px);
+  align-items: start;
+}
+.pipeline-content .pipeline-header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.pipeline-content .step-num {
+  font-family: var(--serif);
+  font-size: 2.5rem;
+  line-height: 1;
+  color: var(--accent);
+  opacity: 0.35;
+  flex-shrink: 0;
+}
+.pipeline-content h3 {
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  line-height: 1.3;
+}
+.pipeline-content .cs-body p { margin-bottom: 12px; }
+.pipeline-media { padding-top: 8px; }
+.pipeline-media .img-frame { aspect-ratio: 16/10; }
+
+/* VIDEO PLAYER */
+.video-player {
+  position: relative;
+  cursor: pointer;
+}
+.video-player video {
+  width: 100%; height: 100%; object-fit: cover; display: block; position: relative; z-index: 2;
+}
+.video-player .play-overlay {
+  position: absolute; inset: 0; z-index: 3;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.25);
+  transition: opacity 0.3s ease;
+}
+.video-player .play-overlay svg { filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4)); }
+.video-player.playing .play-overlay { opacity: 0; pointer-events: none; }
+.video-player:hover .play-overlay { background: rgba(0,0,0,0.15); }
+
+/* RESEARCH CYCLES */
+.cycle-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  margin-top: 32px;
+}
+.cycle-card {
+  padding: 28px 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-faint);
+  border-radius: 14px;
+  transition: border-color 0.3s var(--ease-out);
+}
+.cycle-card:hover { border-color: rgba(200,82,46,0.3); }
+.cycle-card .img-frame {
+  aspect-ratio: 16/10;
+  margin-bottom: 16px;
+  border-radius: 8px;
+}
+.cycle-card-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.cycle-card h3 {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+.cycle-card p {
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--text-mid);
+}
+
+/* RESULTS */
+.results-row { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(36px, 5vw, 80px); align-items: start; }
+.result-col .img-frame { margin-bottom: 20px; }
+.result-col p { font-size: 0.9375rem; line-height: 1.8; color: var(--text-mid); margin-bottom: 10px; max-width: 800px; }
+.result-col ul { list-style: none; padding: 0; margin: 0; max-width: 800px; }
+.result-col ul li { font-size: 0.9375rem; color: var(--text-mid); line-height: 1.7; padding-left: 18px; position: relative; margin-bottom: 8px; }
+.result-col ul li::before { content: ''; position: absolute; left: 0; top: 10px; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+
+/* INSIGHT CALLOUT */
+.insight-callout {
+  border-left: 3px solid var(--accent);
+  padding: 24px 28px;
+  background: rgba(200,82,46,0.06);
+  border-radius: 0 12px 12px 0;
+  margin: 32px 0;
+  max-width: 620px;
+}
+.insight-callout p {
+  font-size: 0.9375rem;
+  line-height: 1.8;
+  color: var(--text-mid);
+  margin: 0;
+  font-style: italic;
+}
+
+/* PROCESS LINK */
+.process-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--accent);
+  text-decoration: none;
+  transition: gap 0.3s var(--ease-out), color 0.2s;
+  margin-top: 8px;
+}
+.process-link:hover { gap: 12px; color: #fff; }
+
+.feature-row.three-col { grid-template-columns: 1fr 1fr 1fr; }
+
+/* DIVIDER */
+.cs-divider { height: 1px; background: var(--border-faint); margin: 0 0 100px; }
+
+/* NEXT */
+.cs-next { padding-top: 80px; padding-bottom: 80px; border-top: 1px solid var(--border-faint); }
+.cs-next-label { font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-dim); margin-bottom: 20px; }
+.cs-next-card { display: flex; align-items: center; justify-content: space-between; padding: 36px 44px; background: var(--bg-card); border: 1px solid var(--border-faint); border-radius: 14px; text-decoration: none; color: #fff; transition: all 0.4s var(--ease-out); }
+.cs-next-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 16px 48px rgba(0,0,0,0.3); }
+.cs-next-card h3 { font-family: var(--serif); font-size: 1.25rem; margin-bottom: 4px; }
+.cs-next-card p { font-size: 0.8125rem; color: var(--text-dim); }
+.cs-next-arrow { width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.3s var(--ease-out); }
+.cs-next-card:hover .cs-next-arrow { background: var(--accent); transform: translateX(4px); }
+
+/* FOOTER */
+footer { padding: 48px 0; border-top: 1px solid var(--border-faint); display: flex; justify-content: space-between; align-items: center; }
+.footer-copy { font-size: 0.75rem; color: var(--text-faint); }
+.footer-links { display: flex; gap: 24px; list-style: none; }
+.footer-links a { font-size: 0.75rem; color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--accent); }
+
+/* ANIMATIONS */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* RESPONSIVE */
+@media (max-width: 1024px) { .two-col, .feature-row, .feature-row.three-col, .results-row, .pipeline-layout { grid-template-columns: 1fr; } .cycle-cards { grid-template-columns: 1fr; } }
+@media (max-width: 768px) { .nav-links { display: none; } .hamburger { display: flex; } .cs-next-card { flex-direction: column; gap: 20px; text-align: center; padding: 28px; } footer { flex-direction: column; gap: 20px; text-align: center; } }
+.mobile-nav { position: fixed; inset: 0; background: var(--bg); z-index: 99; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 32px; opacity: 0; pointer-events: none; transition: opacity 0.3s var(--ease-out); }
+.mobile-nav.open { opacity: 1; pointer-events: all; }
+.mobile-nav a { font-family: var(--serif); font-size: 2rem; color: #fff; text-decoration: none; transition: color 0.2s; }
+.mobile-nav a:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<nav id="mainNav">
+  <a href="index.html" class="nav-logo">Kyle Rutland<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html#work">Work</a></li>
+    <li><a href="ux-process.html">UX Process</a></li>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="/cdn-cgi/l/email-protection#660e030a0a09260d1f0a031413120a0708024805090b" class="nav-cta">Say Hello</a></li>
+  </ul>
+  <button class="hamburger" id="hamburgerBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html" onclick="closeMobileNav()">Home</a>
+  <a href="index.html#work" onclick="closeMobileNav()">Work</a>
+  <a href="ux-process.html" onclick="closeMobileNav()">UX Process</a>
+  <a href="index.html#about" onclick="closeMobileNav()">About</a>
+  <a href="/cdn-cgi/l/email-protection#dab2bfb6b6b59ab1a3b6bfa8afaeb6bbb4bef4b9b5b7" onclick="closeMobileNav()">Contact</a>
+</div>
+
+<!-- HERO BANNER -->
+<div class="hero-banner">
+  <img src="images/casestudy_research.png" alt="Automotive ethnography research" onerror="this.style.display='none'">
+  <div class="hero-banner-overlay"></div>
+  <div class="hero-banner-content">
+    <a href="index.html#work" class="cs-back">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 7H4M6.5 4L3.5 7l3 3"/></svg>
+      Back to All Work
+    </a>
+    <h1 class="cs-hero-title">Jaguar Land Rover: A User Centered Innovation Cycle</h1>
+    <p class="cs-focus">Focus: Automotive IVI & HUD | Ethnographic Research | Design Thinking | Innovation Pipeline</p>
+  </div>
+</div>
+
+<!-- CONTEXT -->
+<div class="cs-wrap">
+  <div class="cs-section reveal" style="margin-top: 80px;">
+    <h2 class="section-title">Context</h2>
+    <div class="cs-body" style="max-width: 620px;">
+      <p>As an embedded extension of Jaguar Land Rover's innovation team, we operated on rolling 4-month cycles to shape the experience across every screen in the car — touchscreen, cluster, HUD, and smartphone — and determine how they might integrate into vehicles 3–5 years out.</p>
+    </div>
+  </div>
+</div>
+
+<div class="cs-wrap"><div class="cs-divider"></div></div>
+
+<!-- MY ROLES -->
+<div class="cs-wrap">
+  <div class="cs-section reveal">
+    <h2 class="section-title">My Roles</h2>
+    <div class="cs-body" style="max-width: 620px;">
+      <ul>
+        <li><strong>Researcher:</strong> Structured GoPro assignments for immersive video diary participants. Participated in design thinking workshops. Observe testing and craft high-level strategy decks.</li>
+        <li><strong>Lead Video Editor:</strong> Synthesized user insights into video highlights reels to be shared with the Head of Innovation and other stakeholders throughout the company.</li>
+        <li><strong>Designer &amp; 3D Animator:</strong> Designed and animated HUD concept for testing in the vehicle buck.</li>
+      </ul>
+      <p style="font-style: italic; margin-top: 16px; font-size: 0.9375rem;"><span style="color: var(--accent);">Processes:</span> <span style="color: var(--text-mid);">ethnographic research, video diary synthesis, storyboarding, usability testing, occlusion testing, 3D animation</span></p>
+    </div>
+  </div>
+</div>
+
+<div class="cs-wrap"><div class="cs-divider"></div></div>
+
+<!-- THE INNOVATION PIPELINE -->
+<div class="cs-wrap">
+  <div class="cs-section reveal" style="margin-bottom: 40px;">
+    <h2 class="section-title">The Innovation Pipeline / An Unadulterated UX Process</h2>
+    <div class="cs-body" style="max-width: 620px;">
+      <p>We pioneered an innovation pipeline anchored in real user behavior that JLR adopted across every technology evaluation cycle. Starting with users' lived experience — not business directives or assumed needs — product features had a direct line from the users' daily commute to the assembly line.</p>
+      <a href="ux-process.html" class="process-link">
+        See UX Process Theory
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 13l7-7M5 6h7v7"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="cs-wrap"><div class="cs-divider" style="width: 40px;"></div></div>
+
+<!-- STEP 01 -->
+<div class="cs-wrap">
+  <div class="pipeline-section reveal">
+    <div class="pipeline-layout">
+      <div class="pipeline-content">
+        <div class="pipeline-header">
+          <span class="step-num">01</span>
+          <h3>Exploratory Research &amp; Video Diaries</h3>
+        </div>
+        <div class="cs-body">
+          <p>Participants were given GoPro cameras to narrate and record their daily routines in their vehicles. Hours of raw footage were distilled into curated highlight reels — structured around key behavioral themes and pain points. These highlight reels became a shared reference point across the organization, aligning stakeholders around the visceral, first-hand witnessing of user painpoints.</p>
+          <p style="font-style: italic; color: var(--text-dim); margin-top: 24px;">"The most valuable insights weren't what participants said they wanted — they were the small frustrations and unconscious workarounds they didn't realize they were doing."</p>
+        </div>
+      </div>
+      <div class="pipeline-media">
+        <div class="img-frame">
+          <img src="images/jlr_diary-study.png" alt="Video diary study" onerror="this.style.display='none'">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cs-wrap"><div class="cs-divider"></div></div>
+
+<!-- STEP 02 -->
+<div class="cs-wrap">
+  <div class="pipeline-section reveal">
+    <div class="pipeline-layout">
+      <div class="pipeline-content">
+        <div class="pipeline-header">
+          <span class="step-num">02</span>
+          <h3>Design Thinking Workshop</h3>
+        </div>
+        <div class="cs-body">
+          <p>Two-day workshops modeled on Stanford d.school methodology brought together stakeholders around the raw research. Engineers, product leads, and designers worked together to produce high-level usage storyboards that became the foundation for all subsequent design and prototyping work.</p>
+        </div>
+      </div>
+      <div class="pipeline-media">
+        <div class="img-frame">
+          <img src="images/jlr_design-workshop.png" alt="Design thinking workshop" onerror="this.style.display='none'">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cs-wrap"><div class="cs-divider"></div></div>
+
+<!-- STEP 03 -->
+<div class="cs-wrap">
+  <div class="pipeline-section reveal">
+    <div class="pipeline-layout">
+      <div class="pipeline-content">
+        <div class="pipeline-header">
+          <span class="step-num">03</span>
+          <h3>Storyboarding, Wireframing &amp; Prototyping</h3>
+        </div>
+        <div class="cs-body">
+          <p>Translated storyboards into detailed use case maps — from wireframes through high-fidelity designs to interactive prototypes.</p>
+        </div>
+      </div>
+      <div class="pipeline-media">
+        <div class="img-frame">
+          <img src="images/jlr_storyboard.png" alt="Use case storyboards" onerror="this.style.display='none'">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cs-wrap"><div class="cs-divider"></div></div>
+
+<!-- STEP 04 -->
+<div class="cs-wrap">
+  <div class="pipeline-section reveal">
+    <div class="pipeline-layout">
+      <div class="pipeline-content">
+        <div class="pipeline-header">
+          <span class="step-num">04</span>
+          <h3>Usability &amp; Occlusion Testing</h3>
+        </div>
+        <div class="cs-body">
+          <p>JLR engineers built our designs directly into vehicle hardware. We then ran occlusion-goggle studies to measure eyes-off-road time and validate that safety-critical interactions met performance thresholds. The most promising concepts were integrated into their production roadmap.</p>
+        </div>
+      </div>
+      <div class="pipeline-media">
+        <div class="img-frame">
+          <img src="images/jlr_testing.png" alt="Occlusion testing in vehicle cockpit" onerror="this.style.display='none'">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cs-wrap"><div class="cs-divider"></div></div>
+
+<!-- RESEARCH CYCLES -->
+<div class="cs-wrap">
+  <div class="cs-section reveal">
+    <h2 class="section-title">Research Cycles</h2>
+    <div class="feature-row three-col">
+      <div class="feature-item">
+        <div class="img-frame">
+          <img src="images/jlr_ultralux.png" alt="UltraLux research" onerror="this.style.display='none'">
+        </div>
+        <h3>UltraLux</h3>
+        <p>Understanding what experience luxury car owners are looking for in their vehicle's infotainment system.</p>
+      </div>
+      <div class="feature-item">
+        <div class="img-frame">
+          <img src="images/jlr_wireframes.png" alt="BYOD wireframes" onerror="this.style.display='none'">
+        </div>
+        <h3>BYOD (Bring Your Own Device)</h3>
+        <p>Determine the experience of the phone in the vehicle. How should the smartphone integrate with the car's touchscreen?</p>
+      </div>
+      <div class="feature-item">
+        <div class="img-frame video-player" id="aronPlayer" onclick="toggleAronVideo()">
+          <video src="images/jlr_aron.mov" loop muted playsinline preload="metadata"></video>
+          <div class="play-overlay">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="24" cy="24" r="23" fill="rgba(0,0,0,0.45)" stroke="rgba(255,255,255,0.8)" stroke-width="1.5"/>
+              <path d="M19 15.5L33 24L19 32.5V15.5Z" fill="white"/>
+            </svg>
+          </div>
+        </div>
+        <h3>ARON</h3>
+        <p>To what extent should the HUD be a part of the driving experience? Exploring the role and boundaries of heads-up display technology within the broader in-vehicle interaction model.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cs-wrap"><div class="cs-divider"></div></div>
+
+<!-- THE IMPACT -->
+<div class="cs-wrap">
+  <div class="cs-section reveal">
+    <h2 class="section-title">Artifacts &amp; Outcomes</h2>
+    <div class="results-row">
+      <div class="result-col">
+        <ul>
+          <li><strong>Empathy at Scale:</strong> Video diary highlight reels became a shared reference point across the organization, aligining engineers, PMs, and executives around clear problems.</li>
+          <li><strong>Actionable Deliverables:</strong> Each cycle culminated in a working prototype, a final report summarizing insights user's relationship with tech in their car, and emerging technology roadmap recommendations.</li>
+        </ul>
+      </div>
+      <div class="result-col">
+        <ul>
+          <li><strong>Lasting Methodology:</strong> We developed a UX research & development cycle that JLR could repeat to evolve their product roadmaps.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NEXT -->
+<div class="cs-wrap">
+  <div class="cs-next reveal">
+    <div class="cs-next-label">Next Case Study</div>
+    <a href="case-study-my-journey.html" class="cs-next-card">
+      <div>
+        <h3>My Journey</h3>
+        <p>A decade of designing interaction models, inventing input paradigms, and defining how people experience technology.</p>
+      </div>
+      <div class="cs-next-arrow">
+        <svg width="18" height="18" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M5 13l7-7M5 6h7v7"/></svg>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="cs-wrap">
+  <footer>
+    <p class="footer-copy">&copy; 2025 Kyle Rutland. All rights reserved.</p>
+    <ul class="footer-links">
+      <li><a href="https://linkedin.com" target="_blank">LinkedIn</a></li>
+      <li><a href="https://medium.com" target="_blank">Medium</a></li>
+      <li><a href="/cdn-cgi/l/email-protection#b9d1dcd5d5d6f9d2c0d5dccbcccdd5d8d7dd97dad6d4">Email</a></li>
+    </ul>
+  </footer>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+var nav = document.getElementById('mainNav');
+window.addEventListener('scroll', function() { nav.classList.toggle('scrolled', window.scrollY > 20); });
+
+var hamburger = document.getElementById('hamburgerBtn');
+var mobileNav = document.getElementById('mobileNav');
+hamburger.addEventListener('click', function() {
+  mobileNav.classList.toggle('open');
+  document.body.style.overflow = mobileNav.classList.contains('open') ? 'hidden' : '';
+});
+function closeMobileNav() { mobileNav.classList.remove('open'); document.body.style.overflow = ''; }
+
+var reveals = document.querySelectorAll('.reveal');
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry, i) {
+    if (entry.isIntersecting) {
+      setTimeout(function() { entry.target.classList.add('visible'); }, i * 80);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(function(el) { observer.observe(el); });
+
+function toggleAronVideo() {
+  var player = document.getElementById('aronPlayer');
+  var video = player.querySelector('video');
+  if (video.paused) {
+    video.play();
+    player.classList.add('playing');
+  } else {
+    video.pause();
+    player.classList.remove('playing');
+  }
+}
+</script>
+
+</body>
+</html>

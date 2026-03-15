@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VinFast IVI Architecture — Case Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #131313;
+  --bg-card: #1b1b1b;
+  --text: #ffffff;
+  --text-mid: rgba(255,255,255,0.85);
+  --text-dim: rgba(255,255,255,0.4);
+  --text-faint: rgba(255,255,255,0.2);
+  --accent: #C8522E;
+  --border: rgba(147,147,147,0.25);
+  --border-faint: rgba(255,255,255,0.06);
+  --serif: 'DM Serif Display', Georgia, serif;
+  --sans: 'Instrument Sans', -apple-system, sans-serif;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --max-w: 1320px;
+  --px: clamp(24px, 6vw, 100px);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+::selection { background: var(--accent); color: #fff; }
+img { max-width: 100%; display: block; }
+
+/* NAV */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0 clamp(24px, 4vw, 64px); height: 72px; display: flex; align-items: center; justify-content: space-between; background: rgba(19,19,19,0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid transparent; transition: border-color 0.3s ease, background 0.3s ease; }
+nav.scrolled { border-bottom-color: var(--border-faint); background: rgba(19,19,19,0.95); }
+.nav-logo { font-family: var(--serif); font-size: 1.15rem; color: #fff; text-decoration: none; letter-spacing: -0.01em; }
+.nav-logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 36px; align-items: center; list-style: none; }
+.nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--text-dim); text-decoration: none; transition: color 0.2s; position: relative; }
+.nav-links a:hover { color: #fff; }
+.nav-links a.active { color: #fff; }
+.nav-links a.active::after { content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 1.5px; background: var(--accent); border-radius: 1px; }
+.nav-cta { font-size: 0.8125rem !important; font-weight: 600 !important; color: var(--bg) !important; background: #fff; padding: 9px 22px; border-radius: 100px; transition: background 0.2s, transform 0.2s !important; }
+.nav-cta:hover { background: var(--accent) !important; color: #fff !important; transform: translateY(-1px); }
+.nav-cta::after { display: none !important; }
+.hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; background: none; border: none; }
+.hamburger span { display: block; width: 22px; height: 1.5px; background: #fff; transition: all 0.3s var(--ease-out); }
+
+/* HERO BANNER */
+.hero-banner {
+  position: relative;
+  width: 100%;
+  margin-top: 72px;
+  aspect-ratio: 16/7;
+  max-height: 560px;
+  overflow: hidden;
+  background: #1a1a1a;
+}
+.hero-banner img {
+  width: 100%; height: 100%; object-fit: cover;
+  opacity: 0; animation: fadeIn 1s var(--ease-out) 0.1s forwards;
+}
+.hero-banner-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(19,19,19,0) 0%, rgba(19,19,19,0) 35%, rgba(19,19,19,0.85) 75%, rgba(19,19,19,1) 100%);
+  pointer-events: none;
+}
+.hero-banner-content {
+  position: absolute; bottom: 0; left: 0; right: 0; z-index: 2;
+  max-width: var(--max-w); margin: 0 auto;
+  padding: 0 var(--px) 28px;
+}
+.cs-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.8125rem; font-weight: 500; color: rgba(255,255,255,0.6);
+  text-decoration: none; margin-bottom: 20px;
+  transition: color 0.2s, gap 0.2s var(--ease-out);
+  opacity: 0; animation: fadeIn 0.8s var(--ease-out) 0.2s forwards;
+}
+.cs-back:hover { color: #fff; gap: 12px; }
+.cs-hero-title {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 3.8vw, 3.2rem);
+  line-height: 1.12; letter-spacing: -0.03em;
+  max-width: 700px; margin-bottom: 14px;
+  color: #fff;
+  opacity: 0; animation: fadeIn 0.8s var(--ease-out) 0.3s forwards;
+}
+.cs-focus {
+  font-size: 0.8125rem; color: rgba(255,255,255,0.5); letter-spacing: 0.02em;
+  opacity: 0; animation: fadeIn 0.8s var(--ease-out) 0.4s forwards;
+  margin-top: 20px;
+}
+
+/* LAYOUT */
+.cs-wrap { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--px); }
+.section-title { font-family: var(--serif); font-size: clamp(1.5rem, 2.5vw, 2rem); line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 24px; }
+.section-title-sm { font-family: var(--serif); font-size: clamp(1.5rem, 2.5vw, 2rem); line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 24px; }
+.cs-section { margin-bottom: 100px; }
+.cs-body p { font-size: 0.9375rem; line-height: 1.8; color: var(--text-mid); margin-bottom: 14px; max-width: 800px; }
+.cs-body ul { list-style: none; padding: 0; margin: 0 0 14px; max-width: 800px; }
+.cs-body ul li { font-size: 0.9375rem; color: var(--text-mid); line-height: 1.7; padding-left: 18px; position: relative; margin-bottom: 8px; }
+.cs-body ul li::before { content: ''; position: absolute; left: 0; top: 10px; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(36px, 5vw, 80px); align-items: start; }
+.img-frame { position: relative; overflow: hidden; border-radius: 12px; background: linear-gradient(135deg, #1a1a1a 0%, #222 50%, #1a1a1a 100%); }
+.img-frame img, .img-frame video { width: 100%; height: 100%; object-fit: cover; display: block; position: relative; z-index: 2; }
+
+/* FEATURES */
+.feature-row { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(36px, 5vw, 80px); align-items: start; }
+.feature-item h3 { font-family: var(--serif); font-size: 1.25rem; line-height: 1.3; margin-bottom: 14px; }
+.feature-item p { font-size: 0.9375rem; line-height: 1.8; color: var(--text-mid); margin-bottom: 12px; max-width: 800px; }
+.feature-item .img-frame { aspect-ratio: 16/10; margin-bottom: 24px; }
+
+/* RESULTS */
+.results-row { display: grid; grid-template-columns: 2fr 1fr; gap: clamp(36px, 5vw, 80px); align-items: start; }
+.result-col .img-frame { margin-bottom: 20px; }
+.result-col p { font-size: 0.9375rem; line-height: 1.8; color: var(--text-mid); margin-bottom: 10px; max-width: 800px; }
+.result-col ul { list-style: none; padding: 0; margin: 0; max-width: 800px; }
+.result-col ul li { font-size: 0.9375rem; color: var(--text-mid); line-height: 1.7; padding-left: 18px; position: relative; margin-bottom: 8px; }
+.result-col ul li::before { content: ''; position: absolute; left: 0; top: 10px; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+
+/* DIVIDER */
+.cs-divider { height: 1px; background: var(--border-faint); margin: 0 0 100px; }
+
+/* NEXT */
+.cs-next { padding-top: 80px; padding-bottom: 80px; border-top: 1px solid var(--border-faint); }
+.cs-next-label { font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-dim); margin-bottom: 20px; }
+.cs-next-card { display: flex; align-items: center; justify-content: space-between; padding: 36px 44px; background: var(--bg-card); border: 1px solid var(--border-faint); border-radius: 14px; text-decoration: none; color: #fff; transition: all 0.4s var(--ease-out); }
+.cs-next-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 16px 48px rgba(0,0,0,0.3); }
+.cs-next-card h3 { font-family: var(--serif); font-size: 1.25rem; margin-bottom: 4px; }
+.cs-next-card p { font-size: 0.8125rem; color: var(--text-dim); }
+.cs-next-arrow { width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.3s var(--ease-out); }
+.cs-next-card:hover .cs-next-arrow { background: var(--accent); transform: translateX(4px); }
+
+/* FOOTER */
+footer { padding: 48px 0; border-top: 1px solid var(--border-faint); display: flex; justify-content: space-between; align-items: center; }
+.footer-copy { font-size: 0.75rem; color: var(--text-faint); }
+.footer-links { display: flex; gap: 24px; list-style: none; }
+.footer-links a { font-size: 0.75rem; color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--accent); }
+
+/* ANIMATIONS */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* RESPONSIVE */
+@media (max-width: 1024px) { .two-col, .feature-row, .results-row { grid-template-columns: 1fr; } }
+@media (max-width: 768px) { .nav-links { display: none; } .hamburger { display: flex; } .cs-next-card { flex-direction: column; gap: 20px; text-align: center; padding: 28px; } footer { flex-direction: column; gap: 20px; text-align: center; } }
+.mobile-nav { position: fixed; inset: 0; background: var(--bg); z-index: 99; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 32px; opacity: 0; pointer-events: none; transition: opacity 0.3s var(--ease-out); }
+.mobile-nav.open { opacity: 1; pointer-events: all; }
+.mobile-nav a { font-family: var(--serif); font-size: 2rem; color: #fff; text-decoration: none; transition: color 0.2s; }
+.mobile-nav a:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<nav id="mainNav">
+  <a href="index.html" class="nav-logo">Kyle Rutland<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html#work">Work</a></li>
+    <li><a href="ux-process.html">UX Process</a></li>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="/cdn-cgi/l/email-protection#6d05080101022d061401081f1819010c0309430e0200" class="nav-cta">Say Hello</a></li>
+  </ul>
+  <button class="hamburger" id="hamburgerBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html" onclick="closeMobileNav()">Home</a>
+  <a href="index.html#work" onclick="closeMobileNav()">Work</a>
+  <a href="ux-process.html" onclick="closeMobileNav()">UX Process</a>
+  <a href="index.html#about" onclick="closeMobileNav()">About</a>
+  <a href="/cdn-cgi/l/email-protection#bdd5d8d1d1d2fdd6c4d1d8cfc8c9d1dcd3d993ded2d0" onclick="closeMobileNav()">Contact</a>
+</div>
+
+<!-- HERO BANNER -->
+<div class="hero-banner">
+  <img src="images/casestudy_automotive.webp" alt="VinFast vehicle interior" onerror="this.style.display='none'">
+  <div class="hero-banner-overlay"></div>
+  <div class="hero-banner-content">
+    <a href="index.html#work" class="cs-back">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 7H4M6.5 4L3.5 7l3 3"/></svg>
+      Back to All Work
+    </a>
+    <h1 class="cs-hero-title">Leading Interaction Architecture for an Electric Vehicle Lineup</h1>
+    <p class="cs-focus">Focus: Automotive IVI | Interaction Architecture | Innovation Strategy</p>
+  </div>
+</div>
+
+<!-- CONTEXT -->
+<div class="cs-wrap">
+  <div class="cs-section reveal" style="margin-top: 80px;">
+    <h2 class="section-title">Context</h2>
+    <div class="cs-body" style="max-width: 620px;">
+      <p>Vinfast (Vietnam's first Automotive OEM) is releasing its first flagship electric vehicle. We are tasked with designing its entire IVI (in-vehicle infotainment system) from the ground up.</p>
+    </div>
+  </div>
+</div>
+
+<!-- MY ROLE -->
+<div class="cs-wrap"><div class="cs-divider"></div></div>
+<div class="cs-wrap">
+  <div class="cs-section reveal">
+    <h2 class="section-title-sm">My Role</h2>
+    <div class="cs-body" style="max-width: 620px;">
+      <ul>
+        <li>Define the global interaction model, design the core interactions of the touchscreen: home screen hierarchy, app-switching logic, and the "always-on" persistent controls.</li>
+        <li>Lead the high-level design exploration for the overall IVI system architecture from the ground up.</li>
+        <li>Spearhead scenario development, wireframing, and prototyping for the climate control system, specifically solving for "blind" usability on a touchscreen.</li>
+      </ul>
+      <p style="font-style: italic; margin-top: 16px; font-size: 0.9375rem;"><span style="color: var(--accent);">Processes:</span> <span style="color: var(--text-mid);">mindmapping, wireframes, prototypes, animation</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- GOALS & CONSTRAINTS -->
+<div class="cs-wrap">
+  <div class="cs-section reveal">
+    <h2 class="section-title-sm">Goals &amp; Constraints</h2>
+    <div class="cs-body" style="max-width: 620px;">
+      <ul>
+        <li>No Cluster (screen in front of the wheel) and very limited physical buttons.</li>
+        <li>How to control everything from an iPad like screen without compromising safety?</li>
+        <li>Can we outperform established players (like Tesla) by reducing cognitive load for safety critical and routine daily tasks?</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="cs-wrap"><div class="cs-divider"></div></div>
+
+<!-- EXECUTION -->
+<div class="cs-wrap">
+  <div class="cs-section reveal">
+    <h2 class="section-title">Execution</h2>
+    <div class="img-frame" style="aspect-ratio:16/9; margin-bottom: 40px;">
+      <video autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;">
+        <source src="images/vinfast_architecture.mov" type="video/mp4">
+      </video>
+    </div>
+    <div class="cs-body" style="max-width: 620px;">
+      <p>Since the client requested a Tesla-like, "minimal physical button" interface, I prioritized minimizing driver distraction.</p>
+      <ul>
+        <li><strong>Safety-First Architecture:</strong> I mapped out high-frequency tasks (Climate, Navigation, Media, Bluetooth) to ensure they were accessible within a single tap from the home screen.</li>
+        <li><strong>Heuristic-Led Design:</strong> Operating under tight initial budgets that didn't allow for external testing, I leaned on established automotive UX heuristics and competitive benchmarking to build a defensible V1.</li>
+        <li><strong>Gestural Controls:</strong> To solve the challenge of adjusting climate without looking away from the road, I implemented "swipe zones" along the bottom bezel. This allowed users to jump from 0 to 100% fan speed or min-to-max temp with a single fluid swipe, mimicking intuitive mobile interaction language.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="cs-wrap"><div class="cs-divider"></div></div>
+
+<!-- FEATURE HIGHLIGHTS -->
+<div class="cs-wrap">
+  <div class="cs-section reveal">
+    <h2 class="section-title">Feature Highlights</h2>
+    <div class="feature-row">
+      <div class="feature-item">
+        <div class="img-frame">
+          <img src="images/vinfast_swipe.png" alt="Digital knob swipe gesture" onerror="this.style.display='none'">
+        </div>
+        <h3>The "Digital Knob"</h3>
+        <p>When a car has no physical knobs, how do we emulate the tactile speed and accuracy on a touchscreen? I developed a high-velocity swipe model allowing for massive temperature shifts in a single, glanceable action.</p>
+        <p>Participants were able to complete the task in 1.2s avg. eye open time with occlusion goggles.</p>
+      </div>
+      <div class="feature-item">
+        <div class="img-frame">
+          <img src="images/vinfast_bluetooth.png" alt="Two-tap Bluetooth switching" onerror="this.style.display='none'">
+        </div>
+        <h3>Two Tap Bluetooth Switching</h3>
+        <p>While competitors treat Bluetooth device switching as a secondary "parked" task, we optimized it into a 2-tap flow, recognizing it as a frequent real-world need for families.</p>
+        <p>Efficiency as Safety: Identifying "edge case" workflows that are actually daily habits.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cs-wrap"><div class="cs-divider"></div></div>
+
+<!-- THE RESULTS -->
+<div class="cs-wrap">
+  <div class="cs-section reveal">
+    <h2 class="section-title">The Results</h2>
+    <div class="results-row">
+      <div class="result-col">
+        <div class="img-frame">
+          <img src="images/vinfast_sus.png" alt="SUS scores" onerror="this.style.display='none'">
+        </div>
+        <ul>
+          <li><strong>SUS Scores ahead of Tesla:</strong> In head-to-head A/B testing, our system delivered higher usability scores than Tesla, even among existing Tesla owners.</li>
+          <li><strong>Regulatory Plus:</strong> Moved beyond "checkbox compliance" to create a system that felt intuitive rather than restrictive.</li>
+        </ul>
+      </div>
+      <div class="result-col">
+        <div class="img-frame">
+          <img src="images/vinfast_testing.png" alt="Occlusion goggle testing" onerror="this.style.display='none'">
+        </div>
+        <p><strong>Cognitive Load &amp; Occlusion:</strong> All designs were vetted through occlusion goggle testing to ensure secondary tasks did not interfere with the primary task of driving.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NEXT -->
+<div class="cs-wrap">
+  <div class="cs-next reveal">
+    <div class="cs-next-label">Next Case Study</div>
+    <a href="case-study-windriver.html" class="cs-next-card">
+      <div>
+        <h3>Wind River Suite: Unifying Notifications</h3>
+        <p>Architecting a centralized notification framework for a mission-critical DevSecOps ecosystem</p>
+      </div>
+      <div class="cs-next-arrow">
+        <svg width="18" height="18" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M5 13l7-7M5 6h7v7"/></svg>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="cs-wrap">
+  <footer>
+    <p class="footer-copy">&copy; 2025 Kyle Rutland. All rights reserved.</p>
+    <ul class="footer-links">
+      <li><a href="https://linkedin.com" target="_blank">LinkedIn</a></li>
+      <li><a href="https://medium.com" target="_blank">Medium</a></li>
+      <li><a href="/cdn-cgi/l/email-protection#b4dcd1d8d8dbf4dfcdd8d1c6c1c0d8d5dad09ad7dbd9">Email</a></li>
+    </ul>
+  </footer>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+var nav = document.getElementById('mainNav');
+window.addEventListener('scroll', function() { nav.classList.toggle('scrolled', window.scrollY > 20); });
+
+var hamburger = document.getElementById('hamburgerBtn');
+var mobileNav = document.getElementById('mobileNav');
+hamburger.addEventListener('click', function() {
+  mobileNav.classList.toggle('open');
+  document.body.style.overflow = mobileNav.classList.contains('open') ? 'hidden' : '';
+});
+function closeMobileNav() { mobileNav.classList.remove('open'); document.body.style.overflow = ''; }
+
+var reveals = document.querySelectorAll('.reveal');
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry, i) {
+    if (entry.isIntersecting) {
+      setTimeout(function() { entry.target.classList.add('visible'); }, i * 80);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(function(el) { observer.observe(el); });
+</script>
+
+</body>
+</html>
