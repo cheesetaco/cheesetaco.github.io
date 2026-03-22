@@ -347,15 +347,16 @@ nav.scrolled { border-bottom-color: var(--border); }
   transition: opacity 0.45s var(--ease-out);
   pointer-events: none;
 }
-.identity-tile:hover::before {
-  opacity: 1;
-}
-
-.identity-tile:hover .identity-tile-img {
-  transform: scale(1.06);
-}
-.identity-tile:hover .identity-tile-overlay {
-  opacity: 1;
+@media (hover: hover) {
+  .identity-tile:hover::before {
+    opacity: 1;
+  }
+  .identity-tile:hover .identity-tile-img {
+    transform: scale(1.06);
+  }
+  .identity-tile:hover .identity-tile-overlay {
+    opacity: 1;
+  }
 }
 
 .identity-tile-tag {
@@ -369,9 +370,11 @@ nav.scrolled { border-bottom-color: var(--border); }
   transform: translateY(10px);
   transition: opacity 0.4s var(--ease-out) 0.05s, transform 0.4s var(--ease-out) 0.05s;
 }
-.identity-tile:hover .identity-tile-tag {
-  opacity: 1;
-  transform: translateY(0);
+@media (hover: hover) {
+  .identity-tile:hover .identity-tile-tag {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .identity-tile-title {
@@ -384,9 +387,11 @@ nav.scrolled { border-bottom-color: var(--border); }
   transform: translateY(10px);
   transition: opacity 0.4s var(--ease-out) 0.1s, transform 0.4s var(--ease-out) 0.1s;
 }
-.identity-tile:hover .identity-tile-title {
-  opacity: 1;
-  transform: translateY(0);
+@media (hover: hover) {
+  .identity-tile:hover .identity-tile-title {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .identity-tile-desc {
@@ -399,9 +404,11 @@ nav.scrolled { border-bottom-color: var(--border); }
   transform: translateY(10px);
   transition: opacity 0.4s var(--ease-out) 0.15s, transform 0.4s var(--ease-out) 0.15s;
 }
-.identity-tile:hover .identity-tile-desc {
-  opacity: 1;
-  transform: translateY(0);
+@media (hover: hover) {
+  .identity-tile:hover .identity-tile-desc {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .identity-tile-link {
@@ -419,15 +426,17 @@ nav.scrolled { border-bottom-color: var(--border); }
   padding-bottom: 2px;
   width: fit-content;
 }
-.identity-tile:hover .identity-tile-link {
-  opacity: 1;
-  transform: translateY(0);
-  border-bottom-color: #fff;
-}
-.identity-tile:hover .identity-tile-link:hover {
-  gap: 10px;
-  border-bottom-color: var(--accent);
-  color: var(--accent);
+@media (hover: hover) {
+  .identity-tile:hover .identity-tile-link {
+    opacity: 1;
+    transform: translateY(0);
+    border-bottom-color: #fff;
+  }
+  .identity-tile:hover .identity-tile-link:hover {
+    gap: 10px;
+    border-bottom-color: var(--accent);
+    color: var(--accent);
+  }
 }
 
 /* ==================== WORK ==================== */
@@ -898,9 +907,11 @@ footer {
       <a href="mailto:design@kylerutland.com" class="about-card-email" style="font-family:'Poppins',sans-serif;">design@kylerutland.com</a>
     </div>
   </div>
-  <div class="about-img-wrap reveal">
-    <img src="images/portrait.jpg" alt="Kyle portrait" style="width:100%;height:100%;object-fit:cover;">
-    <p class="about-location" style="margin-top:0.75rem;font-size:0.875rem;color:var(--fg-muted);text-align:center;">Currently based in Koh Samui, Thailand</p>
+  <div class="about-img-col reveal">
+    <div class="about-img-wrap">
+      <img src="images/portrait.jpg" alt="Kyle portrait" style="width:100%;height:100%;object-fit:cover;">
+    </div>
+    <p class="about-location" style="margin-top:0.75rem;font-size:0.875rem;color:var(--fg-muted);text-align:center;">Currently based in Portland, Oregon & Koh Samui, Thailand</p>
   </div>
 </section>
 
@@ -978,76 +989,106 @@ function closeMobileNav() {
 
 // Reveal on scroll
 
-// Mobile scroll-hover: tile closest to viewport center gets .mobile-active
-// Mouse hover on a different tile overrides it; mouseleave restores viewport tile
+// Mobile scroll-hover: a "hot zone" in the middle 30% of the viewport.
+// Whichever tile occupies the most space in that zone gets .mobile-active.
+// If no tile is in the zone, nothing is active.
+// Mouse hover on a different tile overrides; mouseleave restores scroll-based pick.
 (function() {
   const mobileBreakpoint = 1024;
-  let observer = null;
-  let viewportTile = null;   // the tile currently at viewport center
-  let mouseOverTile = null;  // the tile the mouse is currently over
+  let active = false;
+  let mouseOverTile = null;
+  let rafId = null;
+  const HOT_ZONE_TOP = 0.35; // hot zone starts at 35% from top
+  const HOT_ZONE_BOTTOM = 0.65; // hot zone ends at 65% from top
 
-  function applyActive(tiles) {
-    // If mouse is hovering a tile, that one wins; otherwise viewport tile wins
-    const activeTile = mouseOverTile || viewportTile;
-    tiles.forEach(t => {
-      if (t === activeTile) {
-        t.classList.add('mobile-active');
-      } else {
-        t.classList.remove('mobile-active');
+  function getTiles() {
+    return document.querySelectorAll('.identity-tile');
+  }
+
+  function update() {
+    const tiles = getTiles();
+    if (window.innerWidth > mobileBreakpoint) {
+      tiles.forEach(t => t.classList.remove('mobile-active'));
+      return;
+    }
+
+    const vh = window.innerHeight;
+    const zoneTop = vh * HOT_ZONE_TOP;
+    const zoneBottom = vh * HOT_ZONE_BOTTOM;
+
+    // If mouse is over a tile, that wins
+    if (mouseOverTile) {
+      tiles.forEach(t => {
+        t.classList.toggle('mobile-active', t === mouseOverTile);
+      });
+      return;
+    }
+
+    // Find the tile with the most overlap in the hot zone
+    let bestTile = null;
+    let bestOverlap = 0;
+
+    tiles.forEach(tile => {
+      const rect = tile.getBoundingClientRect();
+      const overlapTop = Math.max(rect.top, zoneTop);
+      const overlapBottom = Math.min(rect.bottom, zoneBottom);
+      const overlap = Math.max(0, overlapBottom - overlapTop);
+
+      if (overlap > bestOverlap) {
+        bestOverlap = overlap;
+        bestTile = tile;
       }
+    });
+
+    tiles.forEach(t => {
+      t.classList.toggle('mobile-active', t === bestTile);
     });
   }
 
-  function initMobileHover() {
-    const tiles = document.querySelectorAll('.identity-tile');
+  function onScroll() {
+    if (rafId) return;
+    rafId = requestAnimationFrame(() => {
+      rafId = null;
+      update();
+    });
+  }
+
+  function init() {
+    const tiles = getTiles();
 
     if (window.innerWidth > mobileBreakpoint) {
-      if (observer) {
-        observer.disconnect();
-        observer = null;
-        viewportTile = null;
+      if (active) {
+        active = false;
         mouseOverTile = null;
+        window.removeEventListener('scroll', onScroll);
         tiles.forEach(t => t.classList.remove('mobile-active'));
       }
       return;
     }
-    if (observer) return; // already initialized
-    if (!tiles.length) return;
 
-    observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            viewportTile = entry.target;
-            applyActive(tiles);
-          }
+    if (!active) {
+      active = true;
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      tiles.forEach(tile => {
+        tile.addEventListener('mouseenter', () => {
+          if (window.innerWidth > mobileBreakpoint) return;
+          mouseOverTile = tile;
+          update();
         });
-      },
-      {
-        rootMargin: '-50% 0px -50% 0px',
-        threshold: 0
-      }
-    );
-
-    tiles.forEach(tile => {
-      observer.observe(tile);
-
-      tile.addEventListener('mouseenter', () => {
-        if (window.innerWidth > mobileBreakpoint) return;
-        mouseOverTile = tile;
-        applyActive(tiles);
+        tile.addEventListener('mouseleave', () => {
+          if (window.innerWidth > mobileBreakpoint) return;
+          mouseOverTile = null;
+          update();
+        });
       });
 
-      tile.addEventListener('mouseleave', () => {
-        if (window.innerWidth > mobileBreakpoint) return;
-        mouseOverTile = null;
-        applyActive(tiles);
-      });
-    });
+      update(); // initial check
+    }
   }
 
-  initMobileHover();
-  window.addEventListener('resize', initMobileHover);
+  init();
+  window.addEventListener('resize', init);
 })();
 
 // Reveal on scroll
