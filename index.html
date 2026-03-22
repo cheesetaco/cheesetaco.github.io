@@ -684,6 +684,36 @@ footer {
   transform: translateY(0);
 }
 
+/* ==================== MOBILE SCROLL-HOVER ==================== */
+@media (max-width: 1024px) {
+  .identity-tile.mobile-active::before {
+    opacity: 1;
+  }
+  .identity-tile.mobile-active .identity-tile-img {
+    transform: scale(1.06);
+  }
+  .identity-tile.mobile-active .identity-tile-overlay {
+    opacity: 1;
+  }
+  .identity-tile.mobile-active .identity-tile-tag {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .identity-tile.mobile-active .identity-tile-title {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .identity-tile.mobile-active .identity-tile-desc {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .identity-tile.mobile-active .identity-tile-link {
+    opacity: 1;
+    transform: translateY(0);
+    border-bottom-color: #fff;
+  }
+}
+
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 1024px) {
   .identity-grid { grid-template-columns: 1fr; }
@@ -947,16 +977,90 @@ function closeMobileNav() {
 }
 
 // Reveal on scroll
-const reveals = document.querySelectorAll('.reveal');
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry, i) => {
+
+// Mobile scroll-hover: tile closest to viewport center gets .mobile-active
+// Mouse hover on a different tile overrides it; mouseleave restores viewport tile
+(function() {
+  const mobileBreakpoint = 1024;
+  let observer = null;
+  let viewportTile = null;   // the tile currently at viewport center
+  let mouseOverTile = null;  // the tile the mouse is currently over
+
+  function applyActive(tiles) {
+    // If mouse is hovering a tile, that one wins; otherwise viewport tile wins
+    const activeTile = mouseOverTile || viewportTile;
+    tiles.forEach(t => {
+      if (t === activeTile) {
+        t.classList.add('mobile-active');
+      } else {
+        t.classList.remove('mobile-active');
+      }
+    });
+  }
+
+  function initMobileHover() {
+    const tiles = document.querySelectorAll('.identity-tile');
+
+    if (window.innerWidth > mobileBreakpoint) {
+      if (observer) {
+        observer.disconnect();
+        observer = null;
+        viewportTile = null;
+        mouseOverTile = null;
+        tiles.forEach(t => t.classList.remove('mobile-active'));
+      }
+      return;
+    }
+    if (observer) return; // already initialized
+    if (!tiles.length) return;
+
+    observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            viewportTile = entry.target;
+            applyActive(tiles);
+          }
+        });
+      },
+      {
+        rootMargin: '-50% 0px -50% 0px',
+        threshold: 0
+      }
+    );
+
+    tiles.forEach(tile => {
+      observer.observe(tile);
+
+      tile.addEventListener('mouseenter', () => {
+        if (window.innerWidth > mobileBreakpoint) return;
+        mouseOverTile = tile;
+        applyActive(tiles);
+      });
+
+      tile.addEventListener('mouseleave', () => {
+        if (window.innerWidth > mobileBreakpoint) return;
+        mouseOverTile = null;
+        applyActive(tiles);
+      });
+    });
+  }
+
+  initMobileHover();
+  window.addEventListener('resize', initMobileHover);
+})();
+
+// Reveal on scroll
+const revealEls = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
     if (entry.isIntersecting) {
-      setTimeout(() => entry.target.classList.add('visible'), i * 80);
-      observer.unobserve(entry.target);
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
     }
   });
 }, { threshold: 0.1 });
-reveals.forEach(el => observer.observe(el));
+revealEls.forEach(el => revealObserver.observe(el));
 </script>
 </body>
 </html>
