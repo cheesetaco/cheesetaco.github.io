@@ -6,7 +6,7 @@
 <title>Kyle Rutland</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Poppins:wght@300&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #FAF9F7;
@@ -742,7 +742,7 @@ footer {
     <li><a href="#work">Work</a></li>
     <li><a href="ux-process.html">UX Process</a></li>
     <li><a href="#about">About</a></li>
-    <li><a href="/cdn-cgi/l/email-protection#660e030a0a0926070a031e0b0914010708480203150f0108" class="nav-cta">Say Hello</a></li>
+    <li><a href="mailto:design@kylerutland.com" class="nav-cta">Say Hello</a></li>
   </ul>
   <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
     <span></span><span></span><span></span>
@@ -755,7 +755,7 @@ footer {
   <a href="#work" onclick="closeMobileNav()">Work</a>
   <a href="ux-process.html" onclick="closeMobileNav()">UX Process</a>
   <a href="#about" onclick="closeMobileNav()">About</a>
-  <a href="/cdn-cgi/l/email-protection#6c04090000032c0d00091401031e0b0d024208091f050b02" onclick="closeMobileNav()">Contact</a>
+  <a href="mailto:design@kylerutland.com" onclick="closeMobileNav()">Contact</a>
 </div>
 
 <!-- HERO -->
@@ -825,6 +825,12 @@ footer {
     </a>
 
   </div>
+  <div style="text-align:center;margin-top:2.5rem;">
+    <a href="ux-process.html" class="btn-secondary">
+      UX Design Process
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l6-6M5 6h6v6"/></svg>
+    </a>
+  </div>
 </section>
 
 <!-- LOGOS (black bar) -->
@@ -845,18 +851,32 @@ footer {
   <div class="about-content reveal">
     <h2>Trusted by global leaders to solve high-complexity design challenges.</h2>
     <p>With 10+ years of experience across automotive, consumer electronics, and IoT, I've developed a reputation for leading innovation and shaping long-term product vision.</p>
-    <ul style="margin-top: 10px;">
+    <ul style="margin-top: 1.5rem;">
       <li>Wireframing, Prototyping &amp; Iterative Design</li>
       <li>Ethnographic and Usability Testing Facilitation</li>
       <li>Mind-mapping, Personas, User Journeys</li>
       <li>Video Editing, 2D &amp; 3D Animation</li>
       <li>Familiar with Front and Backend Web Development</li>
     </ul>
-    <p class="about-location">Currently based in Koh Samui, Thailand &amp; Portland, Oregon.</p>
-    <a href="/cdn-cgi/l/email-protection#167e737a7a7956777a736e7b7964717778387273657f7178" class="btn-secondary">Let's Connect &rarr;</a>
+
+    <style>
+      .about-card{margin-top:0;display:inline-flex;flex-direction:column;align-items:flex-start;gap:2.5rem;}
+      .about-card-email{font-weight:300;font-size:1.9rem;color:var(--accent);text-decoration:none;user-select:all;cursor:pointer;line-height:1.3;position:relative;display:inline-block;padding-bottom:6px;}
+      .about-card-email::after{content:'';position:absolute;left:0;bottom:0;width:100%;height:1.5px;background:var(--accent);transform:translateY(-8px);opacity:0;transition:transform 0.2s ease, opacity 0.2s ease;}
+      .about-card-email:hover::after{transform:translateY(0);opacity:1;}
+      .about-card-label{display:block;font-family:var(--sans);font-size:0.9375rem;font-weight:500;color:var(--accent);margin-bottom:6px;}
+    </style>
+    <div class="about-card">
+      <a href="case-study-my-journey.html" class="btn-secondary">
+        See My Journey
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l6-6M5 6h6v6"/></svg>
+      </a>
+      <a href="mailto:design@kylerutland.com" class="about-card-email" style="font-family:'Poppins',sans-serif;">design@kylerutland.com</a>
+    </div>
   </div>
   <div class="about-img-wrap reveal">
     <img src="images/portrait.jpg" alt="Kyle portrait" style="width:100%;height:100%;object-fit:cover;">
+    <p class="about-location" style="margin-top:0.75rem;font-size:0.875rem;color:var(--fg-muted);text-align:center;">Currently based in Koh Samui, Thailand</p>
   </div>
 </section>
 
@@ -864,13 +884,12 @@ footer {
 <footer>
   <p class="footer-copy">&copy; 2026 Kyle. All rights reserved.</p>
   <ul class="footer-links">
-    <li><a href="https://linkedin.com" target="_blank">LinkedIn</a></li>
-    <li><a href="https://medium.com" target="_blank">Medium</a></li>
-    <li><a href="/cdn-cgi/l/email-protection#2f474a4343406f4e434a5742405d484e41014b4a5c464841">Email</a></li>
+    <li><a href="http://www.linkedin.com/in/kyle-rutland" target="_blank">LinkedIn</a></li>
+    <li><a href="mailto:design@kylerutland.com">Email</a></li>
   </ul>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // Nav scroll — delayed to prevent border shake during hero animations
 const nav = document.getElementById('mainNav');
 function updateNav() {
